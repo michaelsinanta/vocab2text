@@ -2,7 +2,7 @@
 
 Code for the paper **[Text Generation in Low-Resource Languages Using Human-Curated Vocabularies](https://arxiv.org/abs/2610.37105v1)**.
 
-![Architecture Diagram](assets/Human_curated_Vocab_page-0001.jpg)
+![Architecture Diagram](assets/Human_curated_Vocab_page-0001.png)
 
 This repository builds the **prompts** used to ask a large language model to write text in a low-resource language. It does not call any model itself: it writes CSV files of ready-to-use prompts.
 
