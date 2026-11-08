@@ -10,7 +10,7 @@ it as None falls back to non-deterministic sampling, same as before.
 import numpy as np
 import pandas as pd
 from typing import Optional, Union
-from .config import TopicControlledConfig
+from .config import OursExperimentConfig
 
 RngLike = Optional[Union[int, np.random.Generator]]
 
@@ -51,7 +51,7 @@ class CandidateSelector:
 
     def select_topic_controlled(
         self,
-        config: TopicControlledConfig,
+        config: OursExperimentConfig,
         topic: Optional[str] = None,
         pool_df: Optional[pd.DataFrame] = None,
         seed: RngLike = None,
@@ -113,7 +113,7 @@ class CandidateSelector:
 
     def select(
         self,
-        config: TopicControlledConfig,
+        config: OursExperimentConfig,
         topic: Optional[str] = None,
         pool_df: Optional[pd.DataFrame] = None,
         seed: RngLike = None,

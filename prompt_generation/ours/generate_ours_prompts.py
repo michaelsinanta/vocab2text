@@ -26,7 +26,7 @@ from prompt_generation.config import (
     language_display_name,
     resolve_language,
 )
-from prompt_generation.ours.config import TopicControlledConfig
+from prompt_generation.ours.config import OursExperimentConfig
 from prompt_generation.ours.experiment_runner import PromptRunner
 from prompt_generation.ours.similarity import (
     load_english_similarity,
@@ -62,7 +62,7 @@ def generate_rows(
     display_language = language_display_name(language)
     target_length_value = _length_value(target_bucket)
     few_shot_length_value = _length_value(few_shot_bucket)
-    config = TopicControlledConfig(
+    config = OursExperimentConfig(
         n_candidates=n_candidates,
         rank_border=rank_border,
         composition=composition,
@@ -235,9 +235,7 @@ def main():
         dictionary = pd.read_csv(DICTIONARY_DIR / f"{language}.csv")
         enriched_dictionary = prepare_language_dictionary(dictionary, similarity_df)
         display_language = language_display_name(language)
-        runner = PromptRunner(
-            enriched_dictionary, language_few_shots, display_language
-        )
+        runner = PromptRunner(enriched_dictionary, language_few_shots, display_language)
 
         for length_code, few_shot_length_code in zip(
             args.lengths, few_shot_length_codes

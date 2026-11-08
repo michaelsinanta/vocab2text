@@ -1,6 +1,6 @@
 import textwrap
 from typing import List, Mapping, Optional, Sequence, Union
-from .config import TopicControlledConfig
+from .config import OursExperimentConfig
 
 
 class PromptGenerator:
@@ -14,7 +14,7 @@ class PromptGenerator:
         self.few_shot_examples = few_shot_examples
         self.target_language = target_language
 
-    def get_few_shot_pool(self, config: TopicControlledConfig) -> List[dict]:
+    def get_few_shot_pool(self, config: OursExperimentConfig) -> List[dict]:
         if isinstance(self.few_shot_examples, Mapping):
             bucket = (
                 "paragraph"
@@ -26,7 +26,7 @@ class PromptGenerator:
 
     def build_prompt(
         self,
-        config: TopicControlledConfig,
+        config: OursExperimentConfig,
         word_candidates_text: str,
         topic: Optional[str] = None,
         few_shot_examples_override: Optional[Sequence[dict]] = None,
@@ -56,7 +56,8 @@ class PromptGenerator:
 
         topic_rule = (
             f"\nTOPIC:\n- Keep the output related to '{topic}' where the vocabulary allows.\n"
-            if topic else ""
+            if topic
+            else ""
         )
 
         prompt = textwrap.dedent(f"""

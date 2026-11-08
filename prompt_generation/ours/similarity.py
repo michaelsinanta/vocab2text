@@ -1,10 +1,15 @@
 """
 English Word-Topic Similarity
 
-Loads precomputed semantic similarity between every English word and each of the 20
-topics from a CSV, then reuses that single table across all target languages by
-joining on `anchor_word` — the specific English word each target-language
-entry maps to via its `direct_translation`.
+Our target language has a dictionary, but NO word frequencies and NO topic information.
+We borrow English numbers through each word's English translation:
+
+Minangkabau word  ->  English translation  ->  anchor_word   ->  English numbers
+"makan"               "to eat"                 "eat"             Freq, rank, 20 topic scores
+
+The anchor_word is the single English word we use as a stand-in for the target word.
+We always pick the RAREST English word in the translation, because rare words carry the meaning
+For example, ("big house" -> "house" is more informative than "big", if "house" is rarer).
 """
 
 import numpy as np
@@ -59,12 +64,23 @@ def map_frequency_with_anchor(
     lang_df = lang_df.copy()
 
     def rarest_freq_and_anchor(phrase):
+        """
+        Given an English phrase, return (freq, anchor_word).
+        """
+        # Empty / missing translation: nothing to anchor on.
         if not isinstance(phrase, str) or not phrase.strip():
             return np.nan, None
+
+        # Lowercase, treat hyphens as spaces, split into tokens.
         tokens = phrase.lower().replace("-", " ").split()
+
+        # Keep only tokens that exist in the English frequency table.
         valid = [(t, freq_lookup[t]) for t in tokens if t in freq_lookup]
         if not valid:
+            # Translation exists but none of its words are in the English table are excluded from the sampling.
             return np.nan, None
+
+        # Pick the token with the LOWEST frequency (= the rarest word).
         anchor_word, anchor_freq = min(valid, key=lambda x: x[1])
         return anchor_freq, anchor_word
 
@@ -72,13 +88,18 @@ def map_frequency_with_anchor(
     lang_df["freq"] = result.apply(lambda x: x[0])
     lang_df["anchor_word"] = result.apply(lambda x: x[1])
 
+    # Rank words by frequency within THIS language's dictionary
+    # Sort most to least frequent, then rank = 1 for the most frequent word, 2 for the next, ...
+    # Rows without a freq go last and get NaN rank.
     lang_df = lang_df.sort_values(
         "freq", ascending=False, na_position="last"
     ).reset_index(drop=True)
+
     lang_df["rank"] = np.where(
         lang_df["freq"].notna(), np.arange(1, len(lang_df) + 1), np.nan
     )
 
+    # probs = share of total frequency -> sampling probability.
     valid_freq_sum = lang_df["freq"].sum()  # NaN skipped by default
     lang_df["probs"] = lang_df["freq"].fillna(0) / valid_freq_sum
 
@@ -117,10 +138,12 @@ def prepare_language_dictionary(
     One-call convenience wrapper: freq/rank/probs + anchor_word + all 20
     topic similarity columns, ready for CandidateSelector.
     """
-    # Build the freq lookup directly from the similarity DF!
+    # Build both lookups once from the English table.
     freq_lookup = dict(zip(english_sim_df["word"], english_sim_df["freq"]))
     sim_lookup = build_similarity_lookup(english_sim_df)
 
+    # Step 1: freq / anchor_word / rank / probs
     lang_df = map_frequency_with_anchor(lang_df, freq_lookup, translation_col)
+    # Step 2: 20 topic-similarity columns
     lang_df = attach_topic_similarity(lang_df, sim_lookup)
     return lang_df

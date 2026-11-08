@@ -10,8 +10,6 @@ Example:
 from pathlib import Path
 import sys
 
-# `python this_file.py` puts this folder on sys.path, not the repo.
-# `python -m prompt_generation.few_shot` already has the repo root.
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
@@ -30,7 +28,7 @@ from prompt_generation.config import (
     language_display_name,
     resolve_language,
 )
-from prompt_generation.few_shot.config import ExperimentConfig
+from prompt_generation.few_shot.config import FewShotExperimentConfig
 from prompt_generation.few_shot.prompt_generator import FewShotPromptGenerator
 
 
@@ -38,8 +36,7 @@ from prompt_generation.few_shot.prompt_generator import FewShotPromptGenerator
 def generate_rows(language, length_code, pool, samples, n_few_shot, seed):
     category = LENGTH_CATEGORIES[length_code]
     target_len = LENGTH_CLI[length_code]
-    config = ExperimentConfig(
-        exp_id=f"FS_{language[:3].upper()}_{length_code}",
+    config = FewShotExperimentConfig(
         target_sentence_length=target_len,
         n_few_shot=n_few_shot,
         few_shot_sentence_length=target_len,

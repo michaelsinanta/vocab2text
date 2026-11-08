@@ -16,7 +16,7 @@ import random
 import uuid
 from typing import Dict, List, Mapping, Optional, Sequence, Union
 import pandas as pd
-from .config import TopicControlledConfig
+from .config import OursExperimentConfig
 from .candidate_selector import CandidateSelector
 from .prompt_generator import PromptGenerator
 from prompt_generation.config import TOPICS
@@ -59,7 +59,7 @@ class PromptRunner:
 
     def generate_prompts(
         self,
-        config: TopicControlledConfig,
+        config: OursExperimentConfig,
         n_samples: int = 5,
         seed: Optional[int] = None,
         topics: Optional[Sequence[str]] = None,

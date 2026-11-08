@@ -5,7 +5,7 @@ from typing import Optional
 
 
 @dataclass
-class TopicControlledConfig:
+class OursExperimentConfig:
     n_candidates: int  # how many words candidates to offer as its vocabulary
     rank_border: int  # frequency-rank cutoff: words at or below this rank count as "high-frequency"
     composition: float  # fraction (0-1) of n_candidates that should come from the high-frequency pool

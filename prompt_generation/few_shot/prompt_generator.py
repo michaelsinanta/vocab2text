@@ -14,7 +14,7 @@ from prompt_generation.config import (
     bucket_filename,
     language_display_name,
 )
-from prompt_generation.few_shot.config import ExperimentConfig
+from prompt_generation.few_shot.config import FewShotExperimentConfig
 
 PROMPT_TEMPLATE = """\
 You are a linguistic expert in {language}.
@@ -71,7 +71,7 @@ class FewShotPromptGenerator:
         self._uses_length_buckets = isinstance(few_shot_examples, Mapping)
 
     # ------------------------------------------------------------ helpers
-    def _pool_for_config(self, config: ExperimentConfig) -> List[Dict[str, str]]:
+    def _pool_for_config(self, config: FewShotExperimentConfig) -> List[Dict[str, str]]:
         if isinstance(self.few_shot_examples, str):
             raise TypeError(
                 "Pre-rendered few-shot strings cannot be filtered by length."
@@ -90,7 +90,7 @@ class FewShotPromptGenerator:
         )
 
     @staticmethod
-    def _length_spec(config: ExperimentConfig) -> Tuple[str, str]:
+    def _length_spec(config: FewShotExperimentConfig) -> Tuple[str, str]:
         """Return (output_type, length_instruction) for the target length."""
         bucket = normalize_length(config.target_sentence_length)
         if bucket == PARAGRAPH_BUCKET:
@@ -105,7 +105,7 @@ class FewShotPromptGenerator:
 
     def select_examples(
         self,
-        config: ExperimentConfig,
+        config: FewShotExperimentConfig,
         seed: Optional[int] = None,
         override: Optional[Sequence[FewShotExample]] = None,
     ) -> List[FewShotExample]:
@@ -131,7 +131,7 @@ class FewShotPromptGenerator:
     # ------------------------------------------------------------ main API
     def generate_prompt_few_shots_only(
         self,
-        config: ExperimentConfig,
+        config: FewShotExperimentConfig,
         seed: Optional[int] = None,
         few_shot_examples_override: Optional[Sequence[FewShotExample]] = None,
     ) -> Tuple[str, str]:
