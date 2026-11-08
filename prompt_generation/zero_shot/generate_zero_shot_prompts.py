@@ -1,16 +1,15 @@
 """
 Generate topic-related zero-shot prompts for text generation.
+
+Run from the repository root:
+
+  python -m prompt_generation.zero_shot --languages minangkabau --lengths 5_words --samples 100
+  python -m prompt_generation.zero_shot --list
 """
-
-from pathlib import Path
-import sys
-
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
 
 import argparse
 import uuid
+from pathlib import Path
 
 from prompt_generation.config import (
     LANGUAGES,
@@ -85,8 +84,8 @@ def build_parser():
     p.add_argument(
         "--languages",
         nargs="+",
-        default=["Minangkabau"],
-        help="Language names (default: Minangkabau)",
+        default=["minangkabau"],
+        help="Language names (default: minangkabau)",
     )
     p.add_argument(
         "--lengths",

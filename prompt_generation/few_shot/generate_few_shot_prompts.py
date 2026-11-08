@@ -1,21 +1,16 @@
 """
 Generate few-shot-only prompts.
 
-Example:
-  python prompt_generation/few_shot/generate_few_shot_prompts.py --languages minangkabau --lengths 5_words --samples 100
-  python prompt_generation/few_shot/generate_few_shot_prompts.py --languages minangkabau indonesian --lengths 5_words 10_words paragraph --seed 42
-  python prompt_generation/few_shot/generate_few_shot_prompts.py --list
+Run from the repository root:
+
+  python -m prompt_generation.few_shot --languages minangkabau --lengths 5_words --samples 100
+  python -m prompt_generation.few_shot --languages minangkabau indonesian --lengths 5_words 10_words paragraph --seed 42
+  python -m prompt_generation.few_shot --list
 """
-
-from pathlib import Path
-import sys
-
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
 
 import argparse
 import uuid
+from pathlib import Path
 
 from few_shot_prompts.registry import (
     list_languages,

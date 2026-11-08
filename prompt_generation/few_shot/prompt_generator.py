@@ -57,7 +57,7 @@ class FewShotPromptGenerator:
     def __init__(
         self,
         few_shot_examples: FewShotInput,
-        target_language: str = "Minangkabau",
+        target_language: str = "minangkabau",
     ):
         """
         Args:

@@ -1,19 +1,25 @@
-"""Shared language, length, and topic registries for prompt generation.
+"""Shared language, length, and topic lists for every prompt type.
 
-Both zero-shot and few-shot CLIs import from here. Few-shot example files
-use ``LENGTH_FILES`` (e.g. ``5_words.py``, ``paragraph.py``).
+ours, few-shot, and zero-shot CLIs all import from here. Few-shot example
+files use ``LENGTH_FILES`` (e.g. ``5_words.py``, ``paragraph.py``).
 """
 
 from typing import Dict, List
 
-# Language display names. Folder names under few_shot_prompts/ use lowercase.
+# Language names, all lowercase (e.g. "minangkabau").
+# Keep this name identical everywhere the language appears:
+#   LANGUAGES            -> "minangkabau"
+#   few_shot_prompts/    -> minangkabau/    (folder, must be a valid Python package)
+#   dictionaries/        -> minangkabau.csv
+#   --languages flag     -> minangkabau     (case-insensitive)
+# See "Adding a new language" in README.md.
 LANGUAGES: List[str] = [
-    "Hitu",
-    "Indonesian",
-    "Javanese",
-    "Minangkabau",
-    "Vietnamese",
-    "Acehnese",
+    "hitu",
+    "indonesian",
+    "javanese",
+    "minangkabau",
+    "vietnamese",
+    "acehnese",
 ]
 
 # CLI flag -> metadata. ``key`` is the few-shot filename stem.

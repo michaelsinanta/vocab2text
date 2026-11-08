@@ -1,19 +1,16 @@
 """
-Generate prompts using words candidates and few shots examples.
+Generate prompts using word candidates and few-shot examples.
 
-Example:
-  python prompt_generation/ours/generate_ours_prompts.py --languages minangkabau --lengths 5_words --topics food travel --samples 100 --seed 42
+Run from the repository root:
+
+  python -m prompt_generation.ours --languages minangkabau --lengths 5_words --topics food travel --samples 100 --seed 42
+  python -m prompt_generation.ours --list
 """
 
-from pathlib import Path
-import sys
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+from __future__ import annotations
 
 import argparse
-import pandas as pd
+from pathlib import Path
 
 from few_shot_prompts.registry import (
     list_languages,
@@ -33,6 +30,7 @@ from prompt_generation.ours.similarity import (
     prepare_language_dictionary,
 )
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DICTIONARY_DIR = REPO_ROOT / "dictionaries"
 SIMILARITY_CSV = REPO_ROOT / "english_word_freq" / "english_word_topic_similarity.csv"
 
@@ -96,7 +94,7 @@ def generate_rows(
     ]
 
 
-def save(df: pd.DataFrame, out_dir: Path, split_by: str, base_name: str | None):
+def save(df, out_dir: Path, split_by: str, base_name: str | None):
     if split_by == "none":
         groups = [(base_name or "ours_prompts", df)]
     elif split_by == "language":
@@ -226,6 +224,8 @@ def main():
     few_shot_length_codes = [
         args.few_shot_length or length_code for length_code in args.lengths
     ]
+    import pandas as pd
+
     similarity_df = load_english_similarity(args.similarity_csv)
     all_rows = []
     seed_offset = 0
